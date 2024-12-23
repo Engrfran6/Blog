@@ -2,11 +2,13 @@
 
 import {Post} from '@/lib/utils';
 
+const base_url = process.env.BASE_URL;
+
 export const deletePostAction = async (
   postId: string
 ): Promise<{success: boolean; message: string}> => {
   try {
-    const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+    const response = await fetch(`${base_url}/api/posts/${postId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +43,7 @@ export async function updatePostAction(prev: {message: string}, formData: FormDa
   const authorName = `${firstname} ${lastname}`;
 
   try {
-    const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+    const response = await fetch(`${base_url}/api/posts/${postId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -1,5 +1,7 @@
 'use server';
 
+const base_url = process.env.BASE_URL;
+
 export async function createPost(prev: {message: string}, formData: FormData) {
   const rawFormData = {
     title: formData.get('title') as string,
@@ -15,7 +17,7 @@ export async function createPost(prev: {message: string}, formData: FormData) {
   const authorName = `${firstname} ${lastname}`;
 
   try {
-    const response = await fetch('http://localhost:3000/api/posts', {
+    const response = await fetch(`${base_url}/api/posts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
