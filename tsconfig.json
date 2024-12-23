@@ -7,21 +7,39 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "module": "preserve",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@posts/*": ["src/posts/*"],
+      "@/*": ["./*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "components/RecentPostCard.js",
+    "lib/index.js",
+    "postup.js",
+    "app/useContext.js",
+    "lib/api-handlers/api-router.js",
+    "lib/api-handlers/get.js",
+    "lib/api-handlers/create.js",
+    "lib/api-handlers/delete.js",
+    "lib/api-handlers/update.ts"
+  ],
   "exclude": ["node_modules"]
 }
