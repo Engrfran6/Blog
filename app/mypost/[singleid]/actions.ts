@@ -2,7 +2,7 @@
 
 import {Post} from '@/lib/utils';
 
-const base_url = process.env.BASE_URL;
+const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const deletePostAction = async (
   postId: string

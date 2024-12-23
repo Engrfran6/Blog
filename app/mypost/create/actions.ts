@@ -1,6 +1,6 @@
 'use server';
 
-const base_url = process.env.BASE_URL;
+const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 export async function createPost(prev: {message: string}, formData: FormData) {
   const rawFormData = {

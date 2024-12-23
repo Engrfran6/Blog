@@ -1,3 +1,7 @@
+'use server';
+
+const base_url = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const loginAction = async (prev: {message: string}, formData: FormData) => {
   const rawFormData = {
     username: formData.get('username'),
@@ -5,7 +9,7 @@ export const loginAction = async (prev: {message: string}, formData: FormData) =
   };
 
   try {
-    const response = await fetch('http://localhost:3000/api/auth/login', {
+    const response = await fetch(`${base_url}/api/auth/login`, {
       method: 'POST',
       body: JSON.stringify(rawFormData),
     });
@@ -37,7 +41,7 @@ export const registerAction = async (prev: {message: string}, formData: FormData
   };
 
   try {
-    const response = await fetch('http://localhost:3000/api/auth/register', {
+    const response = await fetch(`${base_url}/api/auth/register`, {
       method: 'POST',
       body: JSON.stringify(rawFormData),
     });

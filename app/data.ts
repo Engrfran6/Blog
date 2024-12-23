@@ -3,7 +3,7 @@
 import {Post} from '@/lib/utils';
 import {notFound} from 'next/navigation';
 
-const base_url = process.env.BASE_URL;
+const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 export async function getPosts() {
   const res = await fetch(`${base_url}/api/posts`);
