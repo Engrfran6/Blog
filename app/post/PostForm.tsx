@@ -11,6 +11,8 @@ import {useActionState, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {ClientUploadedFileData} from 'uploadthing/types';
 
+import {ToastAction} from '@/components/ui/toast';
+import {useToast} from '@/hooks/use-toast';
 import {updatePostAction} from '../mypost/[singleid]/actions';
 import {createPost} from '../mypost/create/actions';
 
@@ -27,6 +29,7 @@ const PostForm = ({type, post}: PostFormProps) => {
   const user = useSelector((state: RootState) => state.user.user);
   const router = useRouter();
   const dispatch = useDispatch();
+  const {toast} = useToast();
 
   const isUpdate = type === 'update';
 
@@ -60,11 +63,23 @@ const PostForm = ({type, post}: PostFormProps) => {
       const result = await handlePostType(prev, formData);
 
       if (result?.success) {
+        toast({
+          variant: 'success',
+          description: state.message,
+        });
+
         dispatch(handleStorePost(result.post));
 
         if (result.success && result?.redirect) {
           router.push(result.redirect);
         }
+      } else {
+        toast({
+          variant: 'destructive',
+
+          description: state.message,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
       }
 
       return result;
@@ -75,9 +90,18 @@ const PostForm = ({type, post}: PostFormProps) => {
   const handleUploadComplete = (res: ClientUploadedFileData<{imageUrl: string}>[]) => {
     if (res.length > 0) {
       setImageUrls((prev) => [...prev, ...res]);
-      alert('Upload Completed');
+      toast({
+        variant: 'success',
+        title: 'Image upload',
+        description: `Image with url: ${imageUrls[0]} has been uploaded successfully `,
+      });
     } else {
-      alert('No files uploaded.');
+      toast({
+        variant: 'destructive',
+        title: 'Image upload failed',
+        description: `Failed to upload the image with url: ${res[0].url}`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     }
   };
 
@@ -164,9 +188,6 @@ const PostForm = ({type, post}: PostFormProps) => {
             </div>
           ))}
         </div>
-
-        {/* Message */}
-        <p>{state?.message}</p>
 
         {/* Submit Button */}
         <button type="submit" className="w-full p-3 bg-purple-600 text-white rounded-md">

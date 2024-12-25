@@ -1,54 +1,25 @@
 'use client';
 
-import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {UploadButton} from '@/lib/uploadthing';
-import {cn} from '@/lib/utils';
-import {clearUser, updatePhoto} from '@/redux/features/userSlice';
+import {cn, User} from '@/lib/utils';
+import {clearUser} from '@/redux/features/userSlice';
 import {RootState} from '@/redux/store';
-import {Moon, SettingsIcon, Sun} from 'lucide-react';
-import Image from 'next/image';
+import {Moon, Sun} from 'lucide-react';
 import Link from 'next/link';
 import {usePathname, useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {ClientUploadedFileData} from 'uploadthing/types';
+import {SettingsTab} from './settings/Settings';
 import {Button} from './ui/button';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user.user) as User;
   const dispatch = useDispatch();
-
   const handleLogout = () => {
     dispatch(clearUser());
     router.push('/');
-  };
-
-  const handleProfileUpload = async (file: ClientUploadedFileData<{imageUrl: string}>) => {
-    try {
-      const response = await fetch('http://localhost:3000/api/settings/profilepics', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: `${user?.firstname.toLowerCase()}.${user?.lastname.toLowerCase()}`,
-          imageUrl: file.url, // Send the uploaded file's URL
-        }),
-      });
-
-      if (!response.ok) {
-        console.log(`Failed to upload profile photo: ${response.statusText}`);
-      } else {
-        const {photo} = await response.json();
-        dispatch(updatePhoto(photo));
-        console.log('Profile photo updated successfully!');
-      }
-    } catch (error) {
-      console.log('Error: Failed to upload profile photo:', error);
-    }
   };
 
   return (
@@ -122,48 +93,7 @@ const Navbar = () => {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
-          {user && (
-            <div className="ml-10 flex items-center gap-3">
-              <Image
-                src={user?.photo || '/assets/blog-images/m-avatar.jpeg'}
-                alt={user?.firstname || 'profile photo'}
-                width={500}
-                height={500}
-                className="w-10 h-10 rounded-full"
-              />
-              <Popover>
-                <PopoverTrigger className="hover:text-slate-700">
-                  <SettingsIcon />
-                </PopoverTrigger>
-                <PopoverContent className="w-max text-blue-600 text-sm mt-5">
-                  <ul className="flex flex-col gap-2">
-                    <li>
-                      Profile photo
-                      <UploadButton
-                        endpoint="imageUploader"
-                        onClientUploadComplete={(res) => {
-                          // Do something with the response
-                          handleProfileUpload(res[0]);
-
-                          alert('Upload Completed');
-                        }}
-                        onUploadError={(error: Error) => {
-                          // Do something with the error.
-                          alert(`ERROR! ${error.message}`);
-                        }}
-                        className="w-full p-2 border rounded-md bg-gray-100"
-                      />
-                    </li>
-
-                    <li>change username</li>
-                    <li>change password</li>
-                    <li>Delete account</li>
-                    <li></li>
-                  </ul>
-                </PopoverContent>
-              </Popover>
-            </div>
-          )}
+          <SettingsTab user={user} />
         </div>
 
         <div onClick={() => setOpen(!open)} className="flex md:hidden flex-col gap-1.5 relative">

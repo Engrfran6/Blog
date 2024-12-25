@@ -6,11 +6,11 @@ export async function POST(req: Request) {
   try {
     // Parse the JSON body
     const body = await req.json();
-    const {username, imageUrl} = body;
+    const {userId, imageUrl} = body;
 
     // Validate required fields
-    if (!username || !imageUrl) {
-      return NextResponse.json({error: 'Username and image url are required.'}, {status: 400});
+    if (!userId || !imageUrl) {
+      return NextResponse.json({error: 'userId and image url are required.'}, {status: 400});
     }
 
     // Connect to the database
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
     // Update user photo
     const user = await User.findOneAndUpdate(
-      {username}, // Match the username field
+      {userId}, // Match the userId field
       {$set: {photo: imageUrl}}, // Update the photo field
       {new: true} // Return the updated document
     );

@@ -3,6 +3,8 @@
 import {deletePostAction} from '@/app/mypost/[singleid]/actions';
 import PostForm from '@/app/post/PostForm';
 import SinglePost from '@/app/post/SinglePost';
+import {ToastAction} from '@/components/ui/toast';
+import {useToast} from '@/hooks/use-toast';
 import {deletePost} from '@/redux/features/postSlice';
 import {selectPostById} from '@/redux/selector';
 import {RootState} from '@/redux/store';
@@ -12,6 +14,7 @@ import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 const Page = () => {
+  const {toast} = useToast();
   const {singleid} = useParams();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -28,12 +31,21 @@ const Page = () => {
       const result = await deletePostAction(postId);
 
       if (result.success) {
+        toast({
+          variant: 'success',
+          title: 'Post deleted successfully',
+          description: result.message,
+        });
         dispatch(deletePost(postId));
-        console.log(result.message);
 
         router.push('/mypost');
       } else {
-        console.error(result.message);
+        toast({
+          variant: 'destructive',
+          title: 'Post deleted successfully',
+          description: result.message,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
       }
     } catch (error) {
       console.error('Unexpected error while deleting post:', error);

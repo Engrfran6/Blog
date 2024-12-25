@@ -1,5 +1,6 @@
 'use client';
 
+import {toast} from '@/hooks/use-toast';
 import {cn} from '@/lib/utils';
 import {setUser} from '@/redux/features/userSlice';
 import Form from 'next/form';
@@ -8,6 +9,7 @@ import {useRouter} from 'next/navigation';
 import {useActionState, useEffect} from 'react';
 import {useFormStatus} from 'react-dom';
 import {useDispatch} from 'react-redux';
+import {ToastAction} from '../ui/toast';
 import {loginAction, registerAction} from './actions';
 
 type FormType = 'login' | 'register';
@@ -29,20 +31,32 @@ const AuthForm = ({type}: {type: FormType}) => {
 
   const {pending} = useFormStatus();
 
+  if (state.user) {
+    toast({
+      variant: 'success',
+      title: 'Login successful!',
+      description: state.message,
+    });
+    dispatch(setUser(state.user));
+
+    router.push('/');
+  } else {
+    toast({
+      variant: 'destructive',
+      title: 'Login failed',
+      description: state.message,
+      action: <ToastAction altText="Try again">Try again</ToastAction>,
+    });
+  }
+
   useEffect(() => {
-    if (state.user) {
-      dispatch(setUser(state.user));
-
-      router.push('/');
-    }
-
     if (!state.user) {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         router.push('/');
-      } else '';
+      } else;
     }
-  }, [state.user, dispatch, router]);
+  }, [state.user, dispatch, router, state.message]);
 
   return (
     <div className="w-full max-w-md mx-auto px-8 my-10">
@@ -131,8 +145,6 @@ const AuthForm = ({type}: {type: FormType}) => {
             required
           />
         </div>
-
-        <p aria-live="polite">{state?.message}</p>
 
         <button
           disabled={pending}

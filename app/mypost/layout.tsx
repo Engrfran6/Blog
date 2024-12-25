@@ -17,10 +17,6 @@ export default function RootLayout({
 
   const userPosts = useSelector((state: RootState) => selectPostsByUserId(`${userId}`)(state));
 
-  if (!userPosts || userPosts.length === 0) {
-    return <div>No posts found for this user.</div>;
-  }
-
   const handlePost = (_postId: string, authorName: string, title: string) => {
     router.push(
       `/mypost/${_postId}?author=${encodeURIComponent(authorName)}&title=${encodeURIComponent(
@@ -30,12 +26,18 @@ export default function RootLayout({
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-[85vh] ">
       <div className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8 w-full">
             <div className="flex flex-col-reverse lg:flex-row gap-8 w-full">
-              <SideBar isMypost={isMypost} posts={userPosts} handlePost={handlePost} />
+              <div className="flex flex-col border p-4">
+                <SideBar isMypost={isMypost} posts={userPosts} handlePost={handlePost} />
+                {!userPosts ||
+                  (userPosts.length === 0 && (
+                    <div className="text-red-700 italic">No posts found for this user.</div>
+                  ))}
+              </div>
               {children}
             </div>
           </div>
